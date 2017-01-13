@@ -1,0 +1,16 @@
+[
+{
+  "modid": "dimensionaltransportnodes",
+  "name": "AtomicT_T's Dimensional Transport Nodes",
+  "description": "Short range teleportation for the masses",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["AtomicT_T"],
+  "credits": " ",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

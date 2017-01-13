@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "dimensionaltransportnodes:blocks/blockDTNode",
+    "down": "dimensionaltransportnodes:blocks/blockDTNode",
+    "up": "dimensionaltransportnodes:blocks/blockDTNode",
+    "east": "dimensionaltransportnodes:blocks/blockDTNode",
+    "west": "dimensionaltransportnodes:blocks/blockDTNode",
+    "north": "dimensionaltransportnodes:blocks/blockDTNode",
+    "south": "dimensionaltransportnodes:blocks/blockDTNode"
+  }
+}
