@@ -138,6 +138,9 @@ public class DTNodeSideSettings implements INBTSerializable<NBTTagCompound>{
 					
 					// Try to merge itemstack into inventory
 					int moved = mergeStack(side.inv, itemCopy);
+					if(moved != 0)
+						te.markDirty();
+					
 					itemCopy.stackSize -= moved;
 					if(itemCopy.stackSize <= 0)
 						return toMove;
@@ -159,6 +162,11 @@ public class DTNodeSideSettings implements INBTSerializable<NBTTagCompound>{
 			ItemStack temp = handler.getStackInSlot(i);
 			
 			if(temp == null) {
+				// Have to insert an empty stack before inserting anything...???
+				temp = itemCopy.copy();
+				temp.stackSize = 0;
+				handler.insertItem(i, temp, false);
+				// Insert actual item
 				handler.insertItem(i, itemCopy, false);
 				return toMove;
 			};
@@ -166,10 +174,10 @@ public class DTNodeSideSettings implements INBTSerializable<NBTTagCompound>{
 			if(temp.getItem() == itemCopy.getItem()){
 				int limit = temp.getMaxStackSize() - temp.stackSize;
 				if(itemCopy.stackSize < limit){
-					temp.stackSize += itemCopy.stackSize;
+					handler.insertItem(i, itemCopy, false);
 					return toMove;
 				} else {
-					temp.stackSize = temp.getMaxStackSize();
+					handler.insertItem(i, itemCopy, false);
 					itemCopy.stackSize -= limit;
 				}
 			}

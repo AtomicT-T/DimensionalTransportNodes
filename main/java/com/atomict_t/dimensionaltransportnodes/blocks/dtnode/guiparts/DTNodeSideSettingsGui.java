@@ -2,6 +2,7 @@ package com.atomict_t.dimensionaltransportnodes.blocks.dtnode.guiparts;
 
 import com.atomict_t.dimensionaltransportnodes.blocks.dtnode.DTNodeSideSettings;
 import com.atomict_t.dimensionaltransportnodes.blocks.dtnode.DTNodeTileEntity;
+import com.atomict_t.dimensionaltransportnodes.utils.__;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -56,14 +57,15 @@ public class DTNodeSideSettingsGui extends Gui {
 		if(inOutButton.mouseClicked(mouseX, mouseY, mouseButton)){
 			return true;
 		}
+		
 		DTNodeSideSettings current = te.getSide(fBar.currentFace());
 		if(current == null) return false;
 		
-		if(current.isInput){
-			return inputBW.mouseClicked(mouseX, mouseY, mouseButton);
+		if(current.isInput && inputBW.mouseClicked(mouseX, mouseY, mouseButton)){
+			return true;
 		}
-		if(current.isOutput){
-			return outputBW.mouseClicked(mouseX, mouseY, mouseButton);
+		if(current.isOutput && outputBW.mouseClicked(mouseX, mouseY, mouseButton)){
+			return true;
 		}
 		
 		return false;

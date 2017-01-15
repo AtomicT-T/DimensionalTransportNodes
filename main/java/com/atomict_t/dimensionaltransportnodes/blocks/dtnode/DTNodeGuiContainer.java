@@ -34,6 +34,7 @@ public class DTNodeGuiContainer extends GuiContainer{
     private DTNodeTileEntity te;
     private static FacesBar fBar;
     private DTNodeSideSettingsGui settingsGui;
+    private boolean isInitialized = false;
     
     public DTNodeGuiContainer(DTNodeTileEntity te, DTNodeContainer container) {
         super(container);
