@@ -30,7 +30,7 @@ public class InputBWListToggle extends Gui{
 		Minecraft mc = Minecraft.getMinecraft();
 		mc.getTextureManager().bindTexture(this.spritesheet);
 		
-		DTNodeSideSettings current = te.getSide(fBar.face2int());
+		DTNodeSideSettings current = te.getSide(fBar.currentFace());
 		int textureNum = current.isInputWhitelist ? 0 : 1;
 		
 		drawTexturedModalRect(posX, posY, 233, 76 + textureNum * buttonHeight, buttonWidth, buttonHeight);
@@ -40,7 +40,7 @@ public class InputBWListToggle extends Gui{
 		if(mouseX >= posX && mouseX < posX + buttonWidth)
 			if(mouseY >= posY && mouseY < posY + buttonHeight){
 				
-				DTNodeSideSettings current = te.getSide(fBar.face2int());
+				DTNodeSideSettings current = te.getSide(fBar.currentFace());
 				current.isInputWhitelist = !current.isInputWhitelist;
 				
 				return true;

@@ -81,6 +81,7 @@ public class DTNodeTileEntityPacket implements IMessage {
         private void handle(DTNodeTileEntityPacket message, MessageContext ctx) {
             // This code is run on the server side. So you can do server-side calculations here
         	DTNodeTileEntity te = ((DTNodeTileEntity)ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.pos));
+        	
         	te.deserializeNBT(message.nbt);
         	te.markDirty();
         	IBlockState state = te.getWorld().getBlockState(te.getPos());

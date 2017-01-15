@@ -104,4 +104,5 @@ public class BlockDTNode extends Block implements ITileEntityProvider{
 	public DTNodeTileEntity getTE(World world, BlockPos pos) {
         return (DTNodeTileEntity) world.getTileEntity(pos);
     }
+
 }

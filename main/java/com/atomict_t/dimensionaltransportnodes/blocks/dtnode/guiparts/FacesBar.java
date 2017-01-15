@@ -2,6 +2,7 @@ package com.atomict_t.dimensionaltransportnodes.blocks.dtnode.guiparts;
 
 import com.atomict_t.dimensionaltransportnodes.DimensionalTransportNodes;
 import com.atomict_t.dimensionaltransportnodes.blocks.dtnode.DTNodeTileEntity;
+import com.atomict_t.dimensionaltransportnodes.utils.BlockFace;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -22,11 +23,6 @@ public class FacesBar extends Gui {
 	private int numButtons = 6;
 	private boolean[] enabled = new boolean[numButtons];
 	
-	public enum FaceType {
-		N, S, E, W, U, D
-	};
-//	public FaceType activeFace = null;
-	
 	public EnumFacing activeFace = null;
 	
 	public FacesBar(DTNodeTileEntity te, ResourceLocation background) {
@@ -39,38 +35,14 @@ public class FacesBar extends Gui {
 			enabled[i] = te.hasInventory(i);
 			if(enabled[i] && first == -1){
 				first = i;
-				activeFace = EnumFacing.getFront(i);
+				activeFace = BlockFace.toMCFacing(i);
 			}
 		}
 	}
 	
-	public int face2int(EnumFacing face){
-		if(face == null) return -1;
-		switch(face){
-			case NORTH: return 0;
-			case SOUTH: return 1;
-			case EAST: return 2;
-			case WEST: return 3;
-			case UP: return 4;
-			case DOWN: return 5;
-		}
-		return -1; // Never happens
-	}
 	
-	public int face2int(){
-		return face2int(activeFace);
-	}
-	
-	public EnumFacing int2face(int face){
-		switch(face){
-			case 0: return EnumFacing.NORTH;
-			case 1: return EnumFacing.SOUTH;
-			case 2: return EnumFacing.EAST;
-			case 3: return EnumFacing.WEST;
-			case 4: return EnumFacing.UP;
-			case 5: return EnumFacing.DOWN;
-		}
-		return null; // Never happens
+	public int currentFace(){
+		return BlockFace.toBlockFace(activeFace);
 	}
 
 	public void render(int posX, int posY){
@@ -87,9 +59,9 @@ public class FacesBar extends Gui {
 		if(activeFace != null)
 			drawTexturedModalRect(
 				posX, 
-				posY + buttonHeight * face2int(), 
+				posY + buttonHeight * currentFace(), 
 				textureX + buttonWidth,
-				textureY + buttonHeight * face2int(), 
+				textureY + buttonHeight * currentFace(), 
 				buttonWidth, buttonHeight);
 		
 		for(int i = 0; i < numButtons; i++){
@@ -111,7 +83,7 @@ public class FacesBar extends Gui {
 						if(!enabled[i])
 							return false;
 						
-						activeFace = int2face(i);
+						activeFace = BlockFace.toMCFacing(i);
 						return true;
 					}
 			}

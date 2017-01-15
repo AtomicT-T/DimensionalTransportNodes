@@ -37,5 +37,5 @@ public class DimensionalTransportNodes {
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 
-	}	
+	}
 }

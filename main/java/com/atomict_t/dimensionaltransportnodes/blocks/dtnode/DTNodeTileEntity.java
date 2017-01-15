@@ -3,6 +3,8 @@ package com.atomict_t.dimensionaltransportnodes.blocks.dtnode;
 import java.util.ArrayList;
 
 import com.atomict_t.dimensionaltransportnodes.blocks.dtnode.guiparts.FacesBar;
+import com.atomict_t.dimensionaltransportnodes.utils.BlockFace;
+import com.atomict_t.dimensionaltransportnodes.utils.__;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -25,7 +27,9 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class DTNodeTileEntity extends TileEntity implements ITickable, INBTSerializable<NBTTagCompound> {
+public class DTNodeTileEntity extends TileEntity implements INBTSerializable<NBTTagCompound>, ITickable {
+	private boolean initialized = false;
+	private int tickLimiter = 20;
 
 	public static ArrayList<DTNodeTileEntity> nodes = new ArrayList<DTNodeTileEntity>();
 	
@@ -33,24 +37,11 @@ public class DTNodeTileEntity extends TileEntity implements ITickable, INBTSeria
     public int nodeId = size++;
     
     private DTNodeSideSettings[] settings = new DTNodeSideSettings[6];
-    
-//    // This item handler will hold our nine inventory slots
-//    private ItemStackHandler itemStackHandler = new ItemStackHandler(SIZE) {
-//        @Override
-//        protected void onContentsChanged(int slot) {
-//            // We need to tell the tile entity that something has changed so
-//            // that the chest contents is persisted
-//        	System.out.println("slot changed: " + slot);
-//        }
-//    };
-    
+        
     public DTNodeTileEntity() {
-		settings[0] = new DTNodeSideSettings(pos.north());
-		settings[1] = new DTNodeSideSettings(pos.south());
-		settings[2] = new DTNodeSideSettings(pos.east());
-		settings[3] = new DTNodeSideSettings(pos.west());
-		settings[4] = new DTNodeSideSettings(pos.up());
-		settings[5] = new DTNodeSideSettings(pos.down());
+    	super();
+    	for(int i = 0; i < 6; i++)
+    		settings[i] = new DTNodeSideSettings();
 		
     	nodes.add(this);
     }
@@ -60,14 +51,6 @@ public class DTNodeTileEntity extends TileEntity implements ITickable, INBTSeria
     	
     	return settings[n];
     }
-    
-    @Override
-    public void update() {
-    	if(worldObj.isRemote){
-//            IBlockState state = this.worldObj.getBlockState(pos);
-//            this.worldObj.notifyBlockUpdate(pos, state, state, 3);
-    	}
-	}
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
@@ -92,10 +75,6 @@ public class DTNodeTileEntity extends TileEntity implements ITickable, INBTSeria
     	for(int i = 0; i < settings.length; i++){
     		settings[i].deserializeNBT((NBTTagCompound) compound.getCompoundTag("side" + i));
     	}
-//
-//        if (compound.hasKey("items")) {
-//        	itemStackHandler.deserializeNBT((NBTTagCompound) compound.getTag("items"));
-//        }
 	}
 	
 	@Override
@@ -107,11 +86,8 @@ public class DTNodeTileEntity extends TileEntity implements ITickable, INBTSeria
 	public NBTTagCompound serializeNBT(NBTTagCompound compound) {
     	for(int i = 0; i < settings.length; i++){
     		compound.setTag("side"+i, settings[i].serializeNBT());
-//        	System.out.println("settings[" + i + "].isInput: " + (settings[i].isInput ? "true" : "false") + " (id:" + nodeId + ")");
     	}
     	
-//        compound.setTag("items", itemStackHandler.serializeNBT());
-		
 		return compound;
 	}
 	
@@ -122,52 +98,25 @@ public class DTNodeTileEntity extends TileEntity implements ITickable, INBTSeria
         // If we are too far away from this tile entity you cannot use it
         return !isInvalid() && playerIn.getDistanceSq(pos.add(0.5D, 0.5D, 0.5D)) <= 64D;
     }
-
-//    @Override
-//    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-//        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-//            return true;
-//        }
-//        return super.hasCapability(capability, facing);
-//    }
-//
-//    @Override
-//    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-//        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-//            return (T) itemStackHandler;
-//        }
-//        return super.getCapability(capability, facing);
-//    }
     
     public boolean hasInventory(int direction){
     	TileEntity te = null;
-    	switch(direction){
-			case 0:
-				te = worldObj.getTileEntity(pos.north());
-				break;
-			case 1:
-				te = worldObj.getTileEntity(pos.south());
-				break;
-			case 2:
-				te = worldObj.getTileEntity(pos.east());
-				break;
-			case 3:
-				te = worldObj.getTileEntity(pos.west());
-				break;
-			case 4:
-				te = worldObj.getTileEntity(pos.up());
-				break;
-			case 5:
-				te = worldObj.getTileEntity(pos.down());
-				break;
-    	}
+    	te = worldObj.getTileEntity(pos.offset(BlockFace.toMCFacing(direction)));
     	if(te != null)
-			if(
-//					te instanceof IInventory || 
-					te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
-				)
+			if(te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
 				return true;
-		
     	return false;
     }
+
+	@Override
+	public void update() {
+		if(worldObj == null || worldObj.isRemote) return;
+		if(tickLimiter  < 0){
+			for(int i = 0; i < 6; i++){
+				settings[i].onTick(worldObj, pos.offset(BlockFace.toMCFacing(i)));
+			}
+			tickLimiter = 20;
+		}
+		tickLimiter--;
+	}
 }

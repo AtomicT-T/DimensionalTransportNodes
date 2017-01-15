@@ -30,7 +30,7 @@ public class InOutToggle extends Gui{
 		Minecraft mc = Minecraft.getMinecraft();
 		mc.getTextureManager().bindTexture(this.spritesheet);
 		
-		DTNodeSideSettings current = te.getSide(fBar.face2int());
+		DTNodeSideSettings current = te.getSide(fBar.currentFace());
 		
 		if(current == null) return;
 		
@@ -42,7 +42,7 @@ public class InOutToggle extends Gui{
 	public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		if(mouseX >= posX && mouseX < posX + buttonWidth)
 			if(mouseY >= posY && mouseY < posY + buttonHeight){
-				DTNodeSideSettings current = te.getSide(fBar.face2int());
+				DTNodeSideSettings current = te.getSide(fBar.currentFace());
 				if(current.isInput){
 					current.isInput = false;
 					if(current.isOutput){

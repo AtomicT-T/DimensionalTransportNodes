@@ -35,7 +35,7 @@ public class DTNodeSideSettingsGui extends Gui {
 		Minecraft mc = Minecraft.getMinecraft();
 		mc.getTextureManager().bindTexture(spritesheet);
 		
-		DTNodeSideSettings current = te.getSide(fBar.face2int());
+		DTNodeSideSettings current = te.getSide(fBar.currentFace());
 		
 		if(current == null) return;
 		
@@ -56,7 +56,7 @@ public class DTNodeSideSettingsGui extends Gui {
 		if(inOutButton.mouseClicked(mouseX, mouseY, mouseButton)){
 			return true;
 		}
-		DTNodeSideSettings current = te.getSide(fBar.face2int());
+		DTNodeSideSettings current = te.getSide(fBar.currentFace());
 		if(current == null) return false;
 		
 		if(current.isInput){

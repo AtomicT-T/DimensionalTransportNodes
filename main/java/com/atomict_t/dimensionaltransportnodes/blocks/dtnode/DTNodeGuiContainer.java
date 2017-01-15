@@ -66,6 +66,7 @@ public class DTNodeGuiContainer extends GuiContainer{
     		// face bar clicked
     	} else if(settingsGui.mouseClicked(mouseX, mouseY, mouseButton)){
     		DTNPacketHandler.INSTANCE.sendToAll(new DTNodeTileEntityPacket(te.getPos(), te.serializeNBT()));
+    		DTNPacketHandler.INSTANCE.sendToServer(new DTNodeTileEntityPacket(te.getPos(), te.serializeNBT()));
     		
 			te.markDirty();
 
