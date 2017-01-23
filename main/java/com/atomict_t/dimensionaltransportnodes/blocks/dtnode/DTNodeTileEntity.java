@@ -2,7 +2,9 @@ package com.atomict_t.dimensionaltransportnodes.blocks.dtnode;
 
 import java.util.ArrayList;
 
+import com.atomict_t.dimensionaltransportnodes.DTNPacketHandler;
 import com.atomict_t.dimensionaltransportnodes.blocks.dtnode.guiparts.FacesBar;
+import com.atomict_t.dimensionaltransportnodes.blocks.dtnode.packets.DTNodeTileEntityPacket;
 import com.atomict_t.dimensionaltransportnodes.utils.BlockFace;
 import com.atomict_t.dimensionaltransportnodes.utils.__;
 
@@ -119,4 +121,10 @@ public class DTNodeTileEntity extends TileEntity implements INBTSerializable<NBT
 		}
 		tickLimiter--;
 	}
+
+    public static void sync(TileEntity te){
+    	__.log("try to sync");
+		DTNPacketHandler.INSTANCE.sendToAll(new DTNodeTileEntityPacket(te.getPos(), te.serializeNBT()));
+		DTNPacketHandler.INSTANCE.sendToServer(new DTNodeTileEntityPacket(te.getPos(), te.serializeNBT()));
+    }
 }

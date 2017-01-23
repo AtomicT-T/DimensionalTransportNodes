@@ -30,7 +30,9 @@ public class OutputBWListToggle extends Gui{
 		Minecraft mc = Minecraft.getMinecraft();
 		mc.getTextureManager().bindTexture(this.spritesheet);
 		
-		DTNodeSideSettings current = te.getSide(fBar.currentFace());
+		DTNodeSideSettings current = te.getSide(fBar.activeFace);
+		if(current == null) return;
+		
 		int textureNum = current.isOutputWhitelist ? 0 : 1;
 		
 		drawTexturedModalRect(posX, posY, 233, 76 + textureNum * buttonHeight, buttonWidth, buttonHeight);
@@ -40,7 +42,9 @@ public class OutputBWListToggle extends Gui{
 		if(mouseX >= posX && mouseX < posX + buttonWidth)
 			if(mouseY >= posY && mouseY < posY + buttonHeight){
 				
-				DTNodeSideSettings current = te.getSide(fBar.currentFace());
+				DTNodeSideSettings current = te.getSide(fBar.activeFace);
+				if(current == null) return false;
+				
 				current.isOutputWhitelist = !current.isOutputWhitelist;
 				
 				return true;

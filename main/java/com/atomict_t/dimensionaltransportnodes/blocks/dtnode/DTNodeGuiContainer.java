@@ -2,6 +2,8 @@ package com.atomict_t.dimensionaltransportnodes.blocks.dtnode;
 
 import java.io.IOException;
 
+import javax.swing.text.IconView;
+
 import com.atomict_t.dimensionaltransportnodes.Config;
 import com.atomict_t.dimensionaltransportnodes.DTNPacketHandler;
 import com.atomict_t.dimensionaltransportnodes.DimensionalTransportNodes;
@@ -9,6 +11,9 @@ import com.atomict_t.dimensionaltransportnodes.blocks.dtnode.guiparts.DTNodeSide
 import com.atomict_t.dimensionaltransportnodes.blocks.dtnode.guiparts.FacesBar;
 import com.atomict_t.dimensionaltransportnodes.blocks.dtnode.packets.DTNodeTileEntityPacket;
 import com.atomict_t.dimensionaltransportnodes.gui.elements.GUITap;
+import com.atomict_t.dimensionaltransportnodes.gui.elements.GuiElement;
+import com.atomict_t.dimensionaltransportnodes.gui.elements.IGuiElement;
+import com.atomict_t.dimensionaltransportnodes.utils.__;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -20,60 +25,41 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerHopper;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.network.handshake.NetworkDispatcher;
+import scala.swing.event.MouseClicked;
 
 public class DTNodeGuiContainer extends GuiContainer{
-    public static final int WIDTH = 180;
-    public static final int HEIGHT = 152;
-    
-    private static final ResourceLocation background = new ResourceLocation(Config.modId, "textures/gui/gui.png");
-
-    private DTNodeTileEntity te;
-    private static FacesBar fBar;
-    private DTNodeSideSettingsGui settingsGui;
-    private boolean isInitialized = false;
-    
+	DTNodeGuiWrapper wrapper;
+	
+	public static DTNodeContainer container;
+	
     public DTNodeGuiContainer(DTNodeTileEntity te, DTNodeContainer container) {
         super(container);
-
-        this.te = te;
+        this.container = container;
         
-        xSize = WIDTH;
-        ySize = HEIGHT;
-        
-        fBar = new FacesBar(te, background);
-        settingsGui = new DTNodeSideSettingsGui(te, fBar, background);
+        wrapper = new DTNodeGuiWrapper(te, new ResourceLocation(Config.modId, "textures/gui/gui.png"));
+        xSize = wrapper.width;
+        ySize = wrapper.height;
 	}
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        this.drawDefaultBackground();
+        drawDefaultBackground();
         
-        mc.getTextureManager().bindTexture(background);
-        drawTexturedModalRect(guiLeft, guiTop, 0, 20, xSize, ySize);
-        
-        fBar.render(guiLeft - 20, guiTop);
-        settingsGui.render(guiLeft + 3, guiTop + 3);
-        
+    	wrapper.x = guiLeft;
+    	wrapper.y = guiTop;
+    	wrapper.render(mc, mouseX, mouseY);
     }
     
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
     	super.mouseClicked(mouseX, mouseY, mouseButton);
-    	if(fBar.mouseClicked(mouseX, mouseY, mouseButton)){
-    		// face bar clicked
-    	} else if(settingsGui.mouseClicked(mouseX, mouseY, mouseButton)){
-    		DTNPacketHandler.INSTANCE.sendToAll(new DTNodeTileEntityPacket(te.getPos(), te.serializeNBT()));
-    		DTNPacketHandler.INSTANCE.sendToServer(new DTNodeTileEntityPacket(te.getPos(), te.serializeNBT()));
-    		
-			te.markDirty();
-
-        	IBlockState state = te.getWorld().getBlockState(te.getPos());
-        	te.getWorld().notifyBlockUpdate(te.getPos(), state, state,3);
-    	}
+    	wrapper.mouseClicked(mouseX, mouseY, mouseButton);
     }
     
 	@Override

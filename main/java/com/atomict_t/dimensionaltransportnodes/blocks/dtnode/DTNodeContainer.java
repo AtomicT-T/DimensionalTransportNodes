@@ -35,20 +35,42 @@ public class DTNodeContainer extends Container{
         // Slots for the main inventory
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
-                int x = 9 + col * 18;
-                int y = row * 18 + 70;
+                int x = col * 18 + 1;
+                int y = row * 18 + 1;
                 this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 9, x, y));
             }
         }
 
         // Slots for the hotbar
         for (int row = 0; row < 9; ++row) {
-            int x = 9 + row * 18;
-            int y = 58 + 70;
+            int x = row * 18 + 1;
+            int y = 59;
             this.addSlotToContainer(new Slot(playerInventory, row, x, y));
         }
     }
 
+    public void setOrigin(int originX, int originY){
+        // Slots for the main inventory
+        for (int row = 0; row < 3; ++row) {
+            for (int col = 0; col < 9; ++col) {
+                int x = col * 18 + 1;
+                int y = row * 18 + 1;
+                Slot s = inventorySlots.get(row * 9 + col);
+                s.xDisplayPosition = originX + x;
+                s.yDisplayPosition = originY + y;
+            }
+        }
+
+        // Slots for the hotbar
+        for (int row = 0; row < 9; ++row) {
+            int x = row * 18 + 1;
+            int y = 59;
+            Slot s = inventorySlots.get(27 + row);
+            s.xDisplayPosition = originX + x;
+            s.yDisplayPosition = originY + y;
+        }
+    }
+    
     private void addOwnSlots() {
         IItemHandler itemHandler = this.te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
         int x = 9;
